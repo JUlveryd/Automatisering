@@ -1,23 +1,16 @@
 package stepDefinitions;
 
-import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 
-import java.awt.Checkbox;
 import java.util.Random;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -27,7 +20,6 @@ public class StepDefinitions {
 	private WebDriver driver;
 	private String email;
 	private String username;
-//	private String userTaken;
 	private String password;
 
 	@Given("I have navigated to the website")
@@ -55,33 +47,28 @@ public class StepDefinitions {
 		if (mail.equals("blank")) {
 			email = "";
 			System.out.println("No email");
-
 		} else {
-			email = username + "@gmail.com";
+			email = username + mail;
 			System.out.println("Valid email confirmed");
 		}
-
 		driver.findElement(By.id("email")).sendKeys(email);
 	}
 
 	@Given("I have input a username {string}")
 	public void i_have_input_a_username(String uname) {
-		if (uname.equals("username")) {
-			String random = randomNumber(16);
-			username = random;
-//			userTaken = random;
-			System.out.println("Short username confirmed");
-		}
-
-		else if (uname.equals("usernameTaken")) {
-//			username = userTaken;
-			System.out.println(username);
-			System.out.println("Username already in use");
-
-		} else {
+		if (uname.equals("longName")) {
 			String random = randomNumber(101);
 			username = random;
 			System.out.println("Long username confirmed");
+		}
+		else if (uname.equals("nameTaken")) {
+//			driver.get("https://login.mailchimp.com/signup/");
+			System.out.println(username);
+			System.out.println("Username already in use");
+		} else {
+			String random = randomNumber(16);
+			username = random;
+			System.out.println("Short username confirmed");
 		}
 		driver.findElement(By.id("new_username")).sendKeys(username);
 	}
@@ -94,7 +81,9 @@ public class StepDefinitions {
 
 	@Given("I have checked No Emails box")
 	public void i_have_checked_no_emails_box() {
-		if (!driver.findElement(By.cssSelector("#marketing_newsletter")).isSelected());	{
+		if (!driver.findElement(By.cssSelector("#marketing_newsletter")).isSelected())
+			;
+		{
 			driver.findElement(By.cssSelector("#marketing_newsletter")).click();
 		}
 	}
@@ -113,12 +102,12 @@ public class StepDefinitions {
 		}
 
 		else if (result.equals("Account created")) {
-//			assertEquals(driver.findElement(By.cssSelector("#signup-content > div > div > div > h1")).getText(),
-//					("Check your email"));
-
 			String url = driver.getCurrentUrl();
 			Assert.assertTrue(url.contains("https://login.mailchimp.com/signup/success/?username=" + username));
 			System.out.println();
+
+//			assertEquals(driver.findElement(By.cssSelector("#signup-content > div > div > div > h1")).getText(),
+//			("Check your email"));
 		}
 
 		else if (result.equals("Username taken error")) {
@@ -134,43 +123,12 @@ public class StepDefinitions {
 		}
 	}
 
-//	@Then("the {int} should be")
-//	public void the_should_be(String result) {
-//		switch (result) {
-//		case "No email":
-//			assertEquals(driver
-//					.findElement(By.cssSelector("div.login-field:nth-child(1) > div:nth-child(1) > span:nth-child(3)"))
-//					.getText(), ("Please enter a value"));
-//			break;
-//		case "2":
-//			assertEquals(driver.findElement(By.cssSelector("#signup-content > div > div > div > h1")).getText(),
-//					("Check your email"));
-//			break;
-//		case "3":
-//			assertEquals(
-//					driver.findElement(By.cssSelector("#signup-form > fieldset > div:nth-child(2) > div > span"))
-//							.getText(),	("Another user with this username already exists. Maybe it's your evil twin. Spooky."));
-//			break;
-//		case "4":
-//			assertEquals(driver.findElement(By.cssSelector("#signup-form > fieldset > div:nth-child(2) > div > span"))
-//					.getText(), ("Enter a value less than 100 characters long"));
-//			break;
-//		default:
-//		}
-//	}
-
 	@Given("I close the driver")
 	public void tearDown() throws InterruptedException {
 		Thread.sleep(3000);
 		driver.quit();
 	}
 
-	@Then("I get an error message on screen")
-	public void i_see_an_error_message_on_screen() throws InterruptedException {
-		assertEquals(driver
-				.findElement(By.cssSelector("div.login-field:nth-child(1) > div:nth-child(1) > span:nth-child(3)"))
-				.getText(), ("Please enter a value"));
-	}
 
 	// I blatantly ripped this method of the interwebz
 	private String randomNumber(Integer num) {

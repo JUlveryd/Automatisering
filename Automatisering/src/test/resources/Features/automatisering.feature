@@ -2,9 +2,8 @@ Feature: Mailchimp sign-up
 
   Background:
   Given I have navigated to the website
-   And I have accepted cookies
-  
-@tag2   
+   And I have accepted cookies  
+ 
   Scenario Outline: Account creation   
    Given I have input a username "<username>"
     And I have input an email "<email>"    
@@ -17,8 +16,8 @@ Feature: Mailchimp sign-up
 
 
     Examples: 
-      | username      | email      | result                  |
-     | username      | blank		   | No email error          |
-#     | username      | valid      | Account created         |
-#      | usernameTaken | valid      | Username taken error    |
-#     | longUsername  | valid      | Username too long error |
+      | username  | email | result                  |
+      | name  | blank	| No email error          |
+#      | name  | @gmail.com | Account created         |
+#      | nameTaken | @gmail.com | Username taken error    |
+      | longName  | @gmail.com | Username too long error |
