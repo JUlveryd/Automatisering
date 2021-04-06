@@ -9,15 +9,12 @@ Feature: Mailchimp sign-up
     And I have input an email "<email>"    
     And I have input a <password>
     And I have checked No Emails box
-    When I press Sign Up
-       Then the "<result>" should be
-#       @After
-       #		Then I close the driver
-
+    When I press Sign Up "<signup>"
+    Then the "<result>" should be
 
     Examples: 
-      | username  | email | result                  |
-      | name  | blank	| No email error          |
-#      | name  | @gmail.com | Account created         |
-#      | nameTaken | @gmail.com | Username taken error    |
-      | longName  | @gmail.com | Username too long error |
+      | username  | email      | signup    | result                  |
+      | name      | blank	     | normal    | No email error          |
+      | name      | @gmail.com | normal    | Account created         |
+      | name      | @gmail.com | nameTaken | Username taken error    |
+      | longName  | @gmail.com | normal    | Username too long error |

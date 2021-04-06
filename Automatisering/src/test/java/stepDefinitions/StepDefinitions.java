@@ -11,6 +11,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import io.cucumber.java.After;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -46,10 +47,10 @@ public class StepDefinitions {
 
 		if (mail.equals("blank")) {
 			email = "";
-			System.out.println("No email");
+//			System.out.println("No email");
 		} else {
 			email = username + mail;
-			System.out.println("Valid email confirmed");
+//			System.out.println("Valid email");
 		}
 		driver.findElement(By.id("email")).sendKeys(email);
 	}
@@ -59,16 +60,11 @@ public class StepDefinitions {
 		if (uname.equals("longName")) {
 			String random = randomNumber(101);
 			username = random;
-			System.out.println("Long username confirmed");
-		}
-		else if (uname.equals("nameTaken")) {
-//			driver.get("https://login.mailchimp.com/signup/");
-			System.out.println(username);
-			System.out.println("Username already in use");
+//			System.out.println("Long username");
 		} else {
 			String random = randomNumber(16);
 			username = random;
-			System.out.println("Short username confirmed");
+//			System.out.println("Short username");
 		}
 		driver.findElement(By.id("new_username")).sendKeys(username);
 	}
@@ -81,16 +77,23 @@ public class StepDefinitions {
 
 	@Given("I have checked No Emails box")
 	public void i_have_checked_no_emails_box() {
-		if (!driver.findElement(By.cssSelector("#marketing_newsletter")).isSelected())
-			;
-		{
+		if (!driver.findElement(By.cssSelector("#marketing_newsletter")).isSelected());	{
 			driver.findElement(By.cssSelector("#marketing_newsletter")).click();
 		}
 	}
 
-	@When("I press Sign Up")
-	public void i_press_sign_up() throws InterruptedException {
-		click(driver, By.id("create-account"));
+	@When("I press Sign Up {string}")
+	public void i_press_sign_up(String signup) throws InterruptedException {
+		if (signup.equals("nameTaken")) {
+			click(driver, By.id("create-account"));
+			driver.get("https://login.mailchimp.com/signup/");
+			driver.findElement(By.id("email")).sendKeys(email);
+			driver.findElement(By.id("new_username")).sendKeys(username);
+			driver.findElement(By.id("new_password")).sendKeys(password);
+			click(driver, By.id("create-account"));
+		} else {
+			click(driver, By.id("create-account"));
+		}
 	}
 
 	@Then("the {string} should be")
@@ -123,14 +126,12 @@ public class StepDefinitions {
 		}
 	}
 
-	@Given("I close the driver")
-	public void tearDown() throws InterruptedException {
-		Thread.sleep(3000);
+	@After
+	public void tearDown() {
 		driver.quit();
 	}
 
-
-	// I blatantly ripped this method of the interwebz
+	// I blatantly ripped this method of the interwebz and modified it a bit
 	private String randomNumber(Integer num) {
 		// create a string of uppercase and lowercase characters and numbers
 		String upperAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -161,7 +162,7 @@ public class StepDefinitions {
 			sb.append(randomChar);
 		}
 		String randomString = sb.toString();
-		System.out.println("Random String is: " + randomString);
+//		System.out.println("Random String is: " + randomString);
 		return randomString;
 	}
 }
