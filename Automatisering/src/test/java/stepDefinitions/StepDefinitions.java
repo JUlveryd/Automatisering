@@ -32,14 +32,15 @@ public class StepDefinitions {
 	}
 
 	@Given("I have accepted cookies")
-	public void i_have_accepted_cookies() throws InterruptedException {
+	public void i_have_accepted_cookies() throws InterruptedException { 
 		click(driver, By.id("onetrust-accept-btn-handler"));
-	}
+//		System.out.println("Cookies accepted");
+		}
 
-	private void click(WebDriver driver, By by) throws InterruptedException {
-		Thread.sleep(1000);
+	private void click(WebDriver driver, By by) throws InterruptedException { 
+//		Thread.sleep(1000);		
 		new WebDriverWait(driver, 10).until(ExpectedConditions.elementToBeClickable(by));
-		driver.findElement(by).click();
+		driver.findElement(by).click();	
 	}
 
 	@Given("I have input an email {string}")
@@ -84,45 +85,44 @@ public class StepDefinitions {
 
 	@When("I press Sign Up {string}")
 	public void i_press_sign_up(String signup) throws InterruptedException {
-		if (signup.equals("nameTaken")) {
-			click(driver, By.id("create-account"));
+		click(driver, By.id("create-account"));
+		
+		if (signup.equals("nameTaken")) {			
 			driver.get("https://login.mailchimp.com/signup/");
 			driver.findElement(By.id("email")).sendKeys(email);
 			driver.findElement(By.id("new_username")).sendKeys(username);
 			driver.findElement(By.id("new_password")).sendKeys(password);
 			click(driver, By.id("create-account"));
-		} else {
-			click(driver, By.id("create-account"));
-		}
+		} 
 	}
 
 	@Then("the {string} should be")
 	public void the_should_be(String result) {
 		if (result.equals("No email error")) {
 			assertEquals(driver
-					.findElement(By.cssSelector("div.login-field:nth-child(1) > div:nth-child(1) > span:nth-child(3)"))
-					.getText(), ("Please enter a value"));
+					.findElement(By.cssSelector("div.login-field:nth-child(1) > div:nth-child(1) > span:nth-child(3)")).getText(),
+					("Please enter a value"));
 		}
 
 		else if (result.equals("Account created")) {
 			String url = driver.getCurrentUrl();
 			Assert.assertTrue(url.contains("https://login.mailchimp.com/signup/success/?username=" + username));
-			System.out.println();
-
+			
 //			assertEquals(driver.findElement(By.cssSelector("#signup-content > div > div > div > h1")).getText(),
 //			("Check your email"));
 		}
 
 		else if (result.equals("Username taken error")) {
-			assertEquals(
-					driver.findElement(By.cssSelector("#signup-form > fieldset > div:nth-child(2) > div > span"))
-							.getText(),
+			assertEquals(driver.findElement(By.cssSelector("#signup-form > fieldset > div:nth-child(2) > div > span")).getText(),
 					("Another user with this username already exists. Maybe it's your evil twin. Spooky."));
 		}
 
-		if (result.equals("Username too long error")) {
-			assertEquals(driver.findElement(By.cssSelector("#signup-form > fieldset > div:nth-child(2) > div > span"))
-					.getText(), ("Enter a value less than 100 characters long"));
+		else if (result.equals("Username too long error")) {
+			assertEquals(driver.findElement(By.cssSelector("#signup-form > fieldset > div:nth-child(2) > div > span")).getText(),
+					("Enter a value less than 100 characters long"));
+		}
+		else {
+			System.out.println("No matching assert");
 		}
 	}
 
@@ -131,7 +131,6 @@ public class StepDefinitions {
 		driver.quit();
 	}
 
-	// I blatantly ripped this method of the interwebz and modified it a bit
 	private String randomNumber(Integer num) {
 		// create a string of uppercase and lowercase characters and numbers
 		String upperAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
